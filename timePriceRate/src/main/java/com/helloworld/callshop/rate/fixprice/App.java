@@ -1,4 +1,4 @@
-package com.babel;
+package com.helloworld.callshop.rate.fixprice;
 
 /**
  * Hello world!
