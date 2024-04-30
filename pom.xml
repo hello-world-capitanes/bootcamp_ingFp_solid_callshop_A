@@ -20,6 +20,7 @@
         <module>raterEngine</module>
         <module>fixPriceRate</module>
         <module>percentualPriceRate</module>
+        <module>timePriceRate</module>
     </modules>
 
 </project>

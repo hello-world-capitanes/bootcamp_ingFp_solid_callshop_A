@@ -3,5 +3,6 @@
     <RateFactories>
         <name>com.helloworld.callshop.rate.fixprice.FixPriceRateFactory</name>
         <name>com.helloworld.callshop.rate.percentualprice.PercentualPriceRateFactory</name>
+        <name>com.helloworld.callshop.rate.timeprice.TimePriceRateFactory</name>
     </RateFactories>
 </configuration>
