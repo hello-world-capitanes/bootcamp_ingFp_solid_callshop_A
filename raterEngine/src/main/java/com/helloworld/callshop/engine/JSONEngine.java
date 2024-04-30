@@ -1,42 +1,39 @@
-package com.helloworld.callshop.jsonreader;
+package com.helloworld.callshop.engine;
 
-import com.helloworld.callshop.engine.XMLConfigReader;
-import com.helloworld.callshop.jsonreader.impl.JSONParametersReader;
 import com.helloworld.callshop.rater.rate.Rate;
 import com.helloworld.callshop.rater.rate.RatesRepository;
 import com.helloworld.callshop.rater.rate.factory.RateFactoriesContainer;
 import com.helloworld.callshop.rater.rate.factory.RateFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JSONEngine {
 
-    private final RateFactoriesContainer container;
-    private JSONObject object;
+    private RateFactoriesContainer factoriesContainer;
+    private JSONObject listaTarifas;
 
-    public static void main(String[] args) {
-        JSONEngine engine = getJsonEngine();
-
-        try{
-            XMLConfigReader xmlConfigReader = new XMLConfigReader();
-            xmlConfigReader.readConfiguration("configuration.xml");
-            engine.container.createFactories(xmlConfigReader);
-
-        } catch (IOException | ParserConfigurationException | SAXException e) {
-            throw new RuntimeException(e);
-        }
-
+    public static void main(String[] args) throws Exception{
+        JSONEngine engine = new JSONEngine();
+        engineProvisioning(engine);
         engine.run();
     }
 
-    private static JSONEngine getJsonEngine() {
+    public static void engineProvisioning(JSONEngine engine) throws Exception{
+        String json = readJsonFile();
+        engine.listaTarifas = new JSONObject(json);
 
+        engine.factoriesContainer = new RateFactoriesContainer();
+
+        XMLConfigReader xmlConfigReader = new XMLConfigReader();
+        xmlConfigReader.readConfiguration("configuration.xml");
+        engine.factoriesContainer.createFactories(xmlConfigReader);
+    }
+
+    private static String readJsonFile() {
         String json;
         try (FileReader fr = new FileReader("tarifas.json")) {
             BufferedReader br = new BufferedReader(fr);
@@ -44,20 +41,13 @@ public class JSONEngine {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
-        return new JSONEngine(new JSONObject(json), new RateFactoriesContainer());
-    }
-
-    public JSONEngine(JSONObject object, RateFactoriesContainer container){
-        this.container = container;
-        this.object = object;
+        return json;
     }
 
     public void run(){
         String selectedFactory;
 
-        JSONArray tarifas = object.getJSONArray("tarifas");
+        JSONArray tarifas = listaTarifas.getJSONArray("tarifas");
 
         for (int i = 0; i < tarifas.length(); i++) {
             JSONObject tarifa = tarifas.getJSONObject(i);
@@ -66,7 +56,7 @@ public class JSONEngine {
 
             selectedFactory = selectRateFactory(tarifa);
             
-            RateFactory factory = container.getFactories().get(selectedFactory);
+            RateFactory factory = factoriesContainer.getFactories().get(selectedFactory);
             try {
                 Rate rate = factory.makeRate(paramsReader);
                 RatesRepository.INSTANCE.addRate(rate);
@@ -85,7 +75,7 @@ public class JSONEngine {
 
     private String selectRateFactory(JSONObject tarifa) {
 
-        Map<String, RateFactory> factoryMap = container.getFactories();
+        Map<String, RateFactory> factoryMap = factoriesContainer.getFactories();
 
         String selectedOption = tarifa.getString("tipo_tarifa");
 
