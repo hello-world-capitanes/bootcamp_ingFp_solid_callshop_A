@@ -6,9 +6,7 @@ import com.helloworld.callshop.rater.rate.factory.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -94,6 +92,10 @@ public class TimePriceRateFactory implements RateFactory {
         if(!isValidTimeZone(startTimeZone1,startTimeZone2,startTimeZone3)){
             throw new InvalidParameterValueException("Zonas horarias no validas");
         }
+
+
+        //Parsear LocalTime a ZonedDateTime (tener en cuenta los dias para sumar)
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
 
         String name1 = parseString(parametersMapper.getValue(NAME_RATE_1));
         String name2 = parseString(parametersMapper.getValue(NAME_RATE_2));

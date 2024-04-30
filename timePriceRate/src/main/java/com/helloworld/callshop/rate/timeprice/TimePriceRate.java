@@ -6,19 +6,17 @@ import com.helloworld.callshop.rater.rate.RateableCall;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 public class TimePriceRate extends AbstractRate implements Rate {
 
-    // De 4AM a 12PM
-    private LocalTime inicioFranjaMañana;
+    private ZonedDateTime inicioFranjaMañana;
     private Rate franjaMañana;
 
-    // De 1pm a 8PM
-    private LocalTime inicioFranjaTarde;
+    private ZonedDateTime inicioFranjaTarde;
     private Rate franjaTarde;
 
-    // De 9PM a 3PM
-    private LocalTime inicioFranjaNoche;
+    private ZonedDateTime inicioFranjaNoche;
     private Rate franjaNoche;
 
     public TimePriceRate(String name, LocalTime inicioFranjaMañana, Rate franjaMañana, LocalTime inicioFranjaTarde, Rate franjaTarde, LocalTime inicioFranjaNoche, Rate franjaNoche) {
