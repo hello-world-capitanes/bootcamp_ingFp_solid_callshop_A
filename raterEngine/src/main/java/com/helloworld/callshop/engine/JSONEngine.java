@@ -2,6 +2,7 @@ package com.helloworld.callshop.engine;
 
 import com.helloworld.callshop.rater.rate.Rate;
 import com.helloworld.callshop.rater.rate.RatesRepository;
+import com.helloworld.callshop.rater.rate.factory.RateBuilderException;
 import com.helloworld.callshop.rater.rate.factory.RateFactoriesContainer;
 import com.helloworld.callshop.rater.rate.factory.RateFactory;
 import org.json.JSONArray;
@@ -45,7 +46,7 @@ public class JSONEngine {
     }
 
     public void run(){
-        String selectedFactory;
+        String selectedFactory = "";
 
         JSONArray tarifas = listaTarifas.getJSONArray("tarifas");
 
@@ -53,15 +54,20 @@ public class JSONEngine {
             JSONObject tarifa = tarifas.getJSONObject(i);
 
             JSONParametersReader paramsReader = new JSONParametersReader(tarifa);
-
-            selectedFactory = selectRateFactory(tarifa);
             
+            try{
+                selectedFactory = selectRateFactory(tarifa);
+            } catch (RateBuilderException e) {
+                System.err.println("Error al seleccionar factoría de Rate: "+e.getMessage());
+                System.exit(1);
+            }
+
             RateFactory factory = factoriesContainer.getFactories().get(selectedFactory);
             try {
                 Rate rate = factory.makeRate(paramsReader);
                 RatesRepository.INSTANCE.addRate(rate);
             } catch (Exception e) {
-                System.out.println("Error al crear la tarifa: " + e.getMessage());
+                System.err.println("Error al crear la tarifa: " + e.getMessage());
                 System.exit(1);
             }
         }
@@ -73,16 +79,13 @@ public class JSONEngine {
 
     }
 
-    private String selectRateFactory(JSONObject tarifa) {
+    private String selectRateFactory(JSONObject tarifa) throws RateBuilderException {
 
         Map<String, RateFactory> factoryMap = factoriesContainer.getFactories();
 
         String selectedOption = tarifa.getString("tipo_tarifa");
 
-        if(!factoryMap.containsKey(selectedOption)){
-            System.err.println("La opción en el JSON no existe");
-            System.exit(1);
-        }
+        if(!factoryMap.containsKey(selectedOption)) throw new RateBuilderException("La factoría "+selectedOption+" no existe");
 
         return selectedOption;
     }

@@ -16,7 +16,7 @@ public class JSONParametersReader implements ParametersReader {
     }
 
     @Override
-    public ParametersMapper readParameters(List<Parameter> parameters) {
+    public ParametersMapper readParameters(List<Parameter> parameters) throws InvalidParameterValueException{
 
         JSONObject jsonParametros = tarifa.getJSONObject("parametros");
 
@@ -25,12 +25,10 @@ public class JSONParametersReader implements ParametersReader {
         for (Parameter p : parameters) {
 
             if(parametros.get(p.getName()) == null){
-                System.err.println("No se ha especificado un parámetro esencial: " + p.getName());
-                System.exit(1);
+                throw new InvalidParameterValueException("No se ha especificado un parámetro esencial: "+p.getName());
             } else{
                 if(!p.getValidator().test(parametros.get(p.getName()))){
-                    System.err.println("El parámetro "+p.getName()+" no ha pasado el test");
-                    System.exit(1);
+                    throw new InvalidParameterValueException("El parámetro "+p.getName()+" no ha pasado el test");
                 }
             }
 
