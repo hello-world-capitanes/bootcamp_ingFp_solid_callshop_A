@@ -11,30 +11,17 @@ import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JSONEngine {
 
-    private RateFactoriesContainer container;
+    private final RateFactoriesContainer container;
     private JSONObject object;
 
     public static void main(String[] args) {
-        String json = "{" +"\"autor\": \"Autor\",\n" +
-                    "\"fecha\": \"Fecha_creacion_tarifa\",\n" +
-                    "\"tarifas\":[ " +
-                            "{" +
-                                "\"tipo_tarifa\":\"PERC\",\n" +
-                                "\"parametros\":{" +
-                                    "\"NAME\":\"Tarifa1\",\n" +
-                                    "\"percent\":1\n" +
-                                "}" +
-                            "}"+
-                        "]" +
-                    "}";
-
-
-        JSONEngine engine = new JSONEngine(new JSONObject(json), new RateFactoriesContainer());
+        JSONEngine engine = getJsonEngine();
 
         try{
             XMLConfigReader xmlConfigReader = new XMLConfigReader();
@@ -44,8 +31,22 @@ public class JSONEngine {
         } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new RuntimeException(e);
         }
-        
+
         engine.run();
+    }
+
+    private static JSONEngine getJsonEngine() {
+
+        String json;
+        try (FileReader fr = new FileReader("tarifas.json")) {
+            BufferedReader br = new BufferedReader(fr);
+            json = br.lines().collect(Collectors.joining());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return new JSONEngine(new JSONObject(json), new RateFactoriesContainer());
     }
 
     public JSONEngine(JSONObject object, RateFactoriesContainer container){
@@ -73,7 +74,6 @@ public class JSONEngine {
                 System.out.println("Error al crear la tarifa: " + e.getMessage());
                 System.exit(1);
             }
-            System.out.println("TODO HA IDO BIEN SAHJDSJADJDAJJFAHA");
         }
 
 
@@ -97,7 +97,4 @@ public class JSONEngine {
         return selectedOption;
     }
 
-    public void setObject(JSONObject object) {
-        this.object = object;
-    }
 }

@@ -1,0 +1,21 @@
+{
+  "autor": "Autor",
+  "fecha": "Fecha_creacion_tarifa",
+  "tarifas":[
+    {
+      "tipo_tarifa":"PERC",
+      "parametros":{
+        "NAME":"TarifaPorcentual",
+        "percent":1
+      }
+    },
+    {
+      "tipo_tarifa":"FIX",
+      "parametros":{
+        "NAME":"TarifaFija",
+        "connectFee":2.71828,
+        "minutePrice": 3.14159
+      }
+    }
+  ]
+}
