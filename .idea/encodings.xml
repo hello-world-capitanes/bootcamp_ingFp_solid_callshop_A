@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/fixPriceRate/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/fixPriceRate/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jsonReader/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jsonReader/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/percentualPriceRate/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/percentualPriceRate/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rater/src/main/java" charset="UTF-8" />
